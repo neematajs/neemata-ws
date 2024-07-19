@@ -1,0 +1,31 @@
+{
+  "name": "neemata-ws",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm run --parallel --filter \"*\" build",
+    "build:watch": "pnpm run --parallel --filter \"*\" build --watch",
+    "clean": "rm -rf dist node_modules && pnpm -r exec rm -rf dist node_modules",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "check:type": "pnpm run --parallel --filter \"*\" type-check",
+    "check:lint": "biome lint .",
+    "check:fmt": "biome format .",
+    "check": "pnpm run check:fmt && pnpm run check:lint && pnpm run check:type",
+    "fmt": "biome check --write .",
+    "prepare": "husky",
+    "publish-args": "node --no-warnings ./scripts/publish-args.js"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.0",
+    "esbuild-plugin-file-path-extensions": "^2.1.2",
+    "husky": "^9.0.11",
+    "tsup": "^8.1.2",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  },
+  "workspaces": [
+    "./packages/*"
+  ],
+  "packageManager": "pnpm@9.5.0"
+}

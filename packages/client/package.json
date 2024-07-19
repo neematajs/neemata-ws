@@ -1,0 +1,19 @@
+{
+  "name": "@neematajs/ws-client",
+  "type": "module",
+  "module": "index.ts",
+  "publishConfig": {
+    "module": "./dist/index.js",
+    "types": "./index.ts"
+  },
+  "scripts": {
+    "build": "tsup",
+    "type-check": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@neematajs/common": "^1.0.0"
+  },
+  "devDependencies": {
+    "@neematajs/common": "^1.0.0"
+  }
+}
