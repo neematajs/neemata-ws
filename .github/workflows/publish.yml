@@ -1,0 +1,56 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Log in to npm
+        run: |
+          echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > ~/.npmrc
+          echo "Logged in to npm as ${NPM_USERNAME}"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Set version
+        run: |
+          pnpm version ${{ github.event.release.tag_name }} -ws --allow-same-version --no-commit-hooks --no-git-tag-version --silent || true
+          pnpm -r exec cp ../../README.md ./
+          pnpm -r exec cp ../../LICENSE.md ./
+
+      - name: Build and test
+        run: |
+          pnpm run build
+          pnpm run check
+          pnpm run test
+
+      - name: Dry-run publish and publish
+        run: |
+          pnpm publish --dry-run --filter "*" --access public --no-git-checks --tag=$(pnpm --silent publish-tag ${{ github.event.release.tag_name }})
+          pnpm publish --filter "*" --access public --no-git-checks --tag=$(pnpm --silent publish-tag ${{ github.event.release.tag_name }})
+          
+          
