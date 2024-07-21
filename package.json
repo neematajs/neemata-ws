@@ -13,12 +13,11 @@
     "check:fmt": "biome format .",
     "check": "pnpm run check:fmt && pnpm run check:lint && pnpm run check:type",
     "fmt": "biome check --write .",
-    "prepare": "husky",
-    "publish-args": "node --no-warnings ./scripts/publish-args.js"
+    "prepare": "husky"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.0",
-    "@neematajs/builder": "github:neematajs/builder#9b0438fa68a23a9a077d6df2725135e5bf14df9a",
+    "@neematajs/builder": "github:neematajs/builder#39a944bb0674f589e344e502907e2f1f1bb1af6d",
     "husky": "^9.0.11",
     "typescript": "^5.5.0",
     "vitest": "^2.0.0"
