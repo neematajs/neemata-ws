@@ -1,18 +1,99 @@
 name: Publish
 
+permissions: 
+  contents: write
+  actions: write
+  attestations: write
+
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Whether to publish release'
+        type: boolean
+        required: true
+        default: true
+      pre-release:
+        description: 'Whether it is a pre-release'
+        type: boolean
+        required: true
+        default: false
+      autotag:
+        description: 'Whether to create a tag'
+        type: boolean
+        required: true
+        default: true
+      version:
+        description: 'Version to publish'
+        type: string
+        required: true
+      
 
 jobs:
+  test:
+    strategy:
+      fail-fast: true
+      matrix:
+        node:
+          - 18
+          - 20
+          - 22
+        os:
+          - ubuntu-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+          run_install: false
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - run: pnpm install
+      - run: pnpm run check
+      - run: pnpm run build
+      - run: pnpm run test
+
   build-and-publish:
+
+    needs: [test]
     runs-on: ubuntu-latest
     env:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
+      version_tag: v${{ inputs.version }}
     steps:
+      - name: Create tag
+        if: ${{ inputs.autotag }}
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ env.version_tag }}',
+              sha: context.sha
+            })
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ env.version_tag }}
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -34,23 +115,41 @@ jobs:
           run_install: false
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install && pnpm build
       
       - name: Set version
         run: |
-          pnpm version ${{ github.event.release.tag_name }} -ws --allow-same-version --no-commit-hooks --no-git-tag-version --silent || true
+          pnpm version ${{ inputs.version }} -ws --allow-same-version --no-commit-hooks --no-git-tag-version --silent || true
           pnpm -r exec cp ../../README.md ./
           pnpm -r exec cp ../../LICENSE.md ./
 
-      - name: Build and test
-        run: |
-          pnpm run build
-          pnpm run check
-          pnpm run test
-
       - name: Dry-run publish and publish
         run: |
-          pnpm publish --dry-run --filter "*" --access public --no-git-checks --tag=$(pnpm --silent publish-tag ${{ github.event.release.tag_name }})
-          pnpm publish --filter "*" --access public --no-git-checks --tag=$(pnpm --silent publish-tag ${{ github.event.release.tag_name }})
+          pnpm publish --dry-run --filter "*" --access public --no-git-checks --tag=$(pnpm neemata-tag ${{ inputs.version }})
+          pnpm publish --filter "*" --access public --no-git-checks --tag=$(pnpm neemata-tag ${{ inputs.version }})
+      
+      - name: Publish Github Release
+        if: ${{ inputs.release }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ env.version_tag }}',
+              name: '${{ env.version_tag }}',
+              draft: false,
+              prerelease: ${{ inputs.pre-release }},
+              generate_release_notes: true
+            })
           
-          
+      - name: Delete tag on failure
+        if: ${{ failure() && inputs.autotag }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.git.deleteRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ env.version_tag }}',
+            })

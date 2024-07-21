@@ -9,12 +9,15 @@
     "@neematajs/bun-http-server": "~0.0.3"
   },
   "peerDependencies": {
-    "@neematajs/common": "~1.0.0",
-    "@neematajs/application": "~1.0.0"
+    "@neematajs/common": "~1.1.0-alpha.3",
+    "@neematajs/application": "~1.1.0-alpha.3"
   },
   "devDependencies": {
-    "@neematajs/application": "~1.0.0",
-    "@neematajs/common": "~1.0.0",
+    "@neematajs/application": "~1.1.0-alpha.3",
+    "@neematajs/common": "~1.1.0-alpha.3",
     "@types/bun": "^1.1.0"
+  },
+  "engines": {
+    "bun": ">=1.1.0"
   }
 }

@@ -18,10 +18,16 @@ import {
   decodeNumber,
   encodeNumber,
 } from '@neematajs/common'
-import { WsConnection } from './connection'
-import type { WsTransport } from './transport'
-import type { WsTransportSocket, WsUserData } from './types'
-import { InternalError, getFormat, send, sendPayload, toRecord } from './utils'
+import { WsConnection } from './connection.ts'
+import type { WsTransport } from './transport.ts'
+import type { WsTransportSocket, WsUserData } from './types.ts'
+import {
+  InternalError,
+  getFormat,
+  send,
+  sendPayload,
+  toRecord,
+} from './utils.ts'
 
 export class WsTransportServer {
   protected server!: Server<WsUserData>

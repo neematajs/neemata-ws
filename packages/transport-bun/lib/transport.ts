@@ -1,8 +1,8 @@
 import { BaseTransport } from '@neematajs/application'
 import { TransportType } from '@neematajs/common'
-import type { WsConnection } from './connection'
-import { WsTransportServer } from './server'
-import type { WsTransportOptions } from './types'
+import type { WsConnection } from './connection.ts'
+import { WsTransportServer } from './server.ts'
+import type { WsTransportOptions } from './types.ts'
 
 export class WsTransport extends BaseTransport<
   TransportType.WS,

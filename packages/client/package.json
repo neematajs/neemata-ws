@@ -7,13 +7,15 @@
     "types": "./index.ts"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "neemata-build -p neutral ./index.ts",
     "type-check": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@neematajs/common": "^1.0.0"
+    "@neematajs/common": "^1.1.0-alpha.3",
+    "@neematajs/client": "^1.1.0-alpha.3"
   },
   "devDependencies": {
-    "@neematajs/common": "^1.0.0"
+    "@neematajs/common": "^1.1.0-alpha.3",
+    "@neematajs/client": "^1.1.0-alpha.3"
   }
 }

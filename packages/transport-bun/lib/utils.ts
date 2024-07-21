@@ -1,6 +1,6 @@
-import { type Format, ApiError } from '@neematajs/application'
+import { ApiError, type Format } from '@neematajs/application'
 import { ErrorCode, concat, encodeNumber } from '@neematajs/common'
-import type { WsTransportSocket } from './types'
+import type { WsTransportSocket } from './types.ts'
 
 export const sendPayload = (
   ws: WsTransportSocket,
@@ -47,7 +47,9 @@ export const getFormat = ({ headers, url }: Request, format: Format) => {
 
 export const toRecord = (input: Headers | URLSearchParams) => {
   const obj: Record<string, string> = {}
-  input.forEach((value, key) => { obj[key] = value })
+  input.forEach((value, key) => {
+    obj[key] = value
+  })
   return obj
 }
 
