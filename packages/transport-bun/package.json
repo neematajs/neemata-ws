@@ -19,5 +19,13 @@
   },
   "engines": {
     "bun": ">=1.1.0"
-  }
+  },
+  "files": [
+    "index.ts",
+    "lib",
+    "dist",
+    "tsconfig.json",
+    "LICENCE.md",
+    "README.md"
+  ]
 }

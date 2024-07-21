@@ -17,5 +17,12 @@
   "devDependencies": {
     "@neematajs/common": "^1.1.0-alpha.3",
     "@neematajs/client": "^1.1.0-alpha.3"
-  }
+  },
+  "files": [
+    "index.ts",
+    "dist",
+    "tsconfig.json",
+    "LICENCE.md",
+    "README.md"
+  ]
 }
