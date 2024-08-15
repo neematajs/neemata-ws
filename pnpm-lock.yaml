@@ -11,9 +11,9 @@ importers:
       '@biomejs/biome':
         specifier: ^1.8.0
         version: 1.8.3
-      '@neematajs/builder':
-        specifier: github:neematajs/builder#39a944bb0674f589e344e502907e2f1f1bb1af6d
-        version: https://codeload.github.com/neematajs/builder/tar.gz/39a944bb0674f589e344e502907e2f1f1bb1af6d
+      '@nmtjs/builder':
+        specifier: github:neematajs/builder#a9139aa321ebf2054ce2f7d26e40a346338be149
+        version: https://codeload.github.com/neematajs/builder/tar.gz/a9139aa321ebf2054ce2f7d26e40a346338be149
       husky:
         specifier: ^9.0.11
         version: 9.1.1
@@ -26,28 +26,25 @@ importers:
 
   packages/client:
     devDependencies:
-      '@neematajs/client':
-        specifier: ^1.1.0-alpha.3
-        version: 1.1.0-alpha.3(@neematajs/common@1.1.0-alpha.3)(@neematajs/contract@1.1.0-alpha.3(@neematajs/common@1.1.0-alpha.3))
-      '@neematajs/common':
-        specifier: ^1.1.0-alpha.3
-        version: 1.1.0-alpha.3
+      '@nmtjs/client':
+        specifier: ^0.0.1
+        version: 0.0.1(@nmtjs/common@0.0.1)(@nmtjs/contract@0.0.1(@nmtjs/common@0.0.1)(@sinclair/typebox@0.32.34))
+      '@nmtjs/common':
+        specifier: ^0.0.1
+        version: 0.0.1
 
-  packages/transport-bun:
+  packages/transport:
     dependencies:
-      '@neematajs/bun-http-server':
-        specifier: ~0.0.3
-        version: 0.0.3(typescript@5.5.3)
+      uWebSockets.js:
+        specifier: github:uNetworking/uWebSockets.js#v20.47.0
+        version: https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/6f4b450fc642abba540535f0755c990b42a16026
     devDependencies:
-      '@neematajs/application':
-        specifier: ~1.1.0-alpha.3
-        version: 1.1.0-alpha.3(@neematajs/common@1.1.0-alpha.3)(@neematajs/contract@1.1.0-alpha.3(@neematajs/common@1.1.0-alpha.3))
-      '@neematajs/common':
-        specifier: ~1.1.0-alpha.3
-        version: 1.1.0-alpha.3
-      '@types/bun':
-        specifier: ^1.1.0
-        version: 1.1.6
+      '@nmtjs/application':
+        specifier: ^0.0.1
+        version: 0.0.1(@nmtjs/common@0.0.1)(@nmtjs/contract@0.0.1(@nmtjs/common@0.0.1)(@sinclair/typebox@0.32.34))
+      '@nmtjs/common':
+        specifier: ^0.0.1
+        version: 0.0.1
 
 packages:
 
@@ -268,35 +265,32 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@neematajs/application@1.1.0-alpha.3':
-    resolution: {integrity: sha512-1jeo+xryc2EgZlce8nYAtSYfsXLfBDVqdjK3dp00K5K4iKhIguC2MCou8ZL1nZmH3LQyjQMz58op/R92Qqn0nA==}
+  '@nmtjs/application@0.0.1':
+    resolution: {integrity: sha512-ScUrQmGDFS/s22Ya7itOpc0sD5n3FZ657v+EAH3qW2B+hkPY87ifH3fhxr4hk9NKO4YZx/Px8Aamnxu1JPrx3A==}
     peerDependencies:
-      '@neematajs/common': 1.1.0-alpha.3
-      '@neematajs/contract': 1.1.0-alpha.3
+      '@nmtjs/common': 0.0.1
+      '@nmtjs/contract': 0.0.1
 
-  '@neematajs/builder@https://codeload.github.com/neematajs/builder/tar.gz/39a944bb0674f589e344e502907e2f1f1bb1af6d':
-    resolution: {tarball: https://codeload.github.com/neematajs/builder/tar.gz/39a944bb0674f589e344e502907e2f1f1bb1af6d}
+  '@nmtjs/builder@https://codeload.github.com/neematajs/builder/tar.gz/a9139aa321ebf2054ce2f7d26e40a346338be149':
+    resolution: {tarball: https://codeload.github.com/neematajs/builder/tar.gz/a9139aa321ebf2054ce2f7d26e40a346338be149}
     version: 1.0.0
+    engines: {node: '>= 18'}
     hasBin: true
 
-  '@neematajs/bun-http-server@0.0.3':
-    resolution: {integrity: sha512-RbhMt0bA4/jGzj0gEZOaCHCAL9qBIBLCzW9WPLyqNKdKHYyLEYP/brmF8Sg9k2WMEZBKHFzc56+FqlE9IWU4Ew==}
+  '@nmtjs/client@0.0.1':
+    resolution: {integrity: sha512-lK0fH6Bk5vQrsrmjmhKedW07N01oHiTuFCIbDLIZBA5o0EveIJVx8flK57v6Gvrrj5Nf4jbSLM3fw1eXX0D7cQ==}
     peerDependencies:
-      typescript: ^5.0.0
+      '@nmtjs/common': 0.0.1
+      '@nmtjs/contract': 0.0.1
 
-  '@neematajs/client@1.1.0-alpha.3':
-    resolution: {integrity: sha512-YSso0CTuxlRXCSqB2R8bMJ6M0HTqpEUpKzmWtCi6Iw65YN3m7cogJnnHRiFuIJQVF/MnQS3sEA4kAxQlCKOwPQ==}
+  '@nmtjs/common@0.0.1':
+    resolution: {integrity: sha512-wlcScXR4cFoZihkykioFG7gF5M6Gvwh0R1S1opKdJK5AdiiB3sdMnNiQ+hgJZgP+24jajhXUxftcNMHKOb0K5w==}
+
+  '@nmtjs/contract@0.0.1':
+    resolution: {integrity: sha512-9RtcPUAavur4Gy0hp1CzZTe1ogziTssfSbBdmqA1l7dOk+Vi4hBraXGr2ds8rXIXsp7dlsYWj1QBic5CZnS+dA==}
     peerDependencies:
-      '@neematajs/common': 1.1.0-alpha.3
-      '@neematajs/contract': 1.1.0-alpha.3
-
-  '@neematajs/common@1.1.0-alpha.3':
-    resolution: {integrity: sha512-HgPcec6R0OQfDUeaiTANcVRPpq+WLDI27PZ46/o8RjYfGWasDxXVy2kABVS6WoyFmAC1ysyzxtBYb/lvVOpxBQ==}
-
-  '@neematajs/contract@1.1.0-alpha.3':
-    resolution: {integrity: sha512-FYaYVwxT8VEeffxyhEFOGKqMkBzW8UiHLWFIqIwLd2qylSQ2Rt4CG2dJKw++4dXimnIdnQqFteArpbkZ42H2oQ==}
-    peerDependencies:
-      '@neematajs/common': 1.1.0-alpha.3
+      '@nmtjs/common': 0.0.1
+      '@sinclair/typebox': ^0.32.34
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -385,92 +379,14 @@ packages:
   '@sinclair/typebox@0.32.34':
     resolution: {integrity: sha512-a3Z3ytYl6R/+7ldxx04PO1semkwWlX/8pTqxsPw4quIcIXDFPZhOc1Wx8azWmkU26ccK3mHwcWenn0avNgAKQg==}
 
-  '@swc/core-darwin-arm64@1.7.0':
-    resolution: {integrity: sha512-2ylhM7f0HwUwLrFYZAe/dse8PCbPsYcJS3Dt7Q8NT3PUn7vy6QOMxNcOPPuDrnmaXqQQO3oxdmRapguTxaat9g==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@swc/core-darwin-x64@1.7.0':
-    resolution: {integrity: sha512-SgVnN4gT1Rb9YfTkp4FCUITqSs7Yj0uB2SUciu5CV3HuGvS5YXCUzh+KrwpLFtx8NIgivISKcNnb41mJi98X8Q==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [darwin]
-
-  '@swc/core-linux-arm-gnueabihf@1.7.0':
-    resolution: {integrity: sha512-+Z9Dayart1iKJQEJJ9N/KS4z5EdXJE3WPFikY0jonKTo4Dd8RuyVz5yLvqcIMeVdz/SwximATaL6iJXw7hZS9A==}
-    engines: {node: '>=10'}
-    cpu: [arm]
-    os: [linux]
-
-  '@swc/core-linux-arm64-gnu@1.7.0':
-    resolution: {integrity: sha512-UnLrCiZ1EI4shznJn0xP6DLgsXUSwtfsdgHhGYCrvbgVBBve3S9iFgVFEB3SPl7Q/TdowNbrN4zHU0oChfiNfw==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@swc/core-linux-arm64-musl@1.7.0':
-    resolution: {integrity: sha512-H724UANA+ptsfwKRr9mnaDa9cb5fw0oFysiGKTgb3DMYcgk3Od0jMTnXVPFSVpo7FlmyxeC9K8ueUPBOoOK6XA==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@swc/core-linux-x64-gnu@1.7.0':
-    resolution: {integrity: sha512-SY3HA0K0Dpqt1HIfMLGpwL4hd4UaL2xHP5oZXPlRQPhUDZrbb4PbI3ZJnh66c63eL4ZR8EJ+HRFI0Alx5p69Zw==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [linux]
-
-  '@swc/core-linux-x64-musl@1.7.0':
-    resolution: {integrity: sha512-cEJ2ebtV1v/5Ilb55E05J6F5SrHKQWzUttIhR5Mkayyo+yvPslcpByuFC3D+J7X1ebziTOBpWuMpUdjLfh3SMQ==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [linux]
-
-  '@swc/core-win32-arm64-msvc@1.7.0':
-    resolution: {integrity: sha512-ecQOOmzEssz+m0pR4xDYCGuvn3E/l0nQ3tk5jp1NA1lsAy4bMV0YbYCHjptYvWL/UjhIerIp3IlCJ8x5DodSog==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [win32]
-
-  '@swc/core-win32-ia32-msvc@1.7.0':
-    resolution: {integrity: sha512-gz81seZkRn3zMnVOc7L5k6F4vQC82gIxmHiL+GedK+A37XI/X26AASU3zxvORnqQbwQYXQ+AEVckxBmFlz3v2g==}
-    engines: {node: '>=10'}
-    cpu: [ia32]
-    os: [win32]
-
-  '@swc/core-win32-x64-msvc@1.7.0':
-    resolution: {integrity: sha512-b5Fd1xEOw9uqBpj2lqsaR4Iq9UhiL84hNDcEsi6DQA7Y1l85waQAslTbS0E4/pJ1PISAs0jW0zIGLco1eaWBOg==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [win32]
-
-  '@swc/core@1.7.0':
-    resolution: {integrity: sha512-d4vMzH6ICllDwlPuhset2h8gu/USHdbyfJim+2hQEdxC0UONtfpmu38XBgNqRjStrji1Q5M10jfeUZL3cu1i8g==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      '@swc/helpers': '*'
-    peerDependenciesMeta:
-      '@swc/helpers':
-        optional: true
-
-  '@swc/counter@0.1.3':
-    resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
-
-  '@swc/types@0.1.10':
-    resolution: {integrity: sha512-jIar7JjM8pwwOo/IpOmR1aYOAZmXKwyk0qhl5jbIMReAocmBCcyGaTWVemDbsJ6zNrcFE+d7Vy3aNWx6z7CIbw==}
-
-  '@types/bun@1.1.6':
-    resolution: {integrity: sha512-uJgKjTdX0GkWEHZzQzFsJkWp5+43ZS7HC8sZPFnOwnSo1AsNl2q9o2bFeS23disNDqbggEgyFkKCHl/w8iZsMA==}
+  '@swc/wasm@1.7.11':
+    resolution: {integrity: sha512-XZQl/EBX7/xFklL4UEATrPXQOqbPtwKwXxzsE25aq2WIjaH5kC7WIDF1GD5rA5871X9hoQR5Gm/YgYDmQRCibg==}
 
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
 
   '@types/node@20.12.14':
     resolution: {integrity: sha512-scnD59RpYD91xngrQQLGkE+6UrHUPzeKZWhhjBSa3HSkwjbQc38+q3RoIVEwxQGRw3M+j5hpNAM+lgV3cVormg==}
-
-  '@types/ws@8.5.11':
-    resolution: {integrity: sha512-4+q7P5h3SpJxaBft0Dzpbr6lmMaqh0Jr2tbhJZ/luAwvD7ohSCniYkwz/pLxuT2h0EOa6QADgJj1Ko+TzRfZ+w==}
 
   '@vitest/expect@2.0.3':
     resolution: {integrity: sha512-X6AepoOYePM0lDNUPsGXTxgXZAl3EXd0GYe/MZyVE4HzkUqyUVC6S3PrY5mClDJ6/7/7vALLMV3+xD/Ko60Hqg==}
@@ -529,9 +445,6 @@ packages:
 
   buffer@6.0.3:
     resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
-
-  bun-types@1.1.17:
-    resolution: {integrity: sha512-Z4+OplcSd/YZq7ZsrfD00DKJeCwuNY96a1IDJyR73+cTBaFIS7SC6LhpY/W3AMEXO9iYq5NJ58WAwnwL1p5vKg==}
 
   cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
@@ -884,6 +797,10 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  uWebSockets.js@https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/6f4b450fc642abba540535f0755c990b42a16026:
+    resolution: {tarball: https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/6f4b450fc642abba540535f0755c990b42a16026}
+    version: 20.47.0
+
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
@@ -1103,34 +1020,28 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@neematajs/application@1.1.0-alpha.3(@neematajs/common@1.1.0-alpha.3)(@neematajs/contract@1.1.0-alpha.3(@neematajs/common@1.1.0-alpha.3))':
+  '@nmtjs/application@0.0.1(@nmtjs/common@0.0.1)(@nmtjs/contract@0.0.1(@nmtjs/common@0.0.1)(@sinclair/typebox@0.32.34))':
     dependencies:
-      '@neematajs/common': 1.1.0-alpha.3
-      '@neematajs/contract': 1.1.0-alpha.3(@neematajs/common@1.1.0-alpha.3)
+      '@nmtjs/common': 0.0.1
+      '@nmtjs/contract': 0.0.1(@nmtjs/common@0.0.1)(@sinclair/typebox@0.32.34)
       pino: 9.3.1
       pino-pretty: 11.2.1
 
-  '@neematajs/builder@https://codeload.github.com/neematajs/builder/tar.gz/39a944bb0674f589e344e502907e2f1f1bb1af6d':
+  '@nmtjs/builder@https://codeload.github.com/neematajs/builder/tar.gz/a9139aa321ebf2054ce2f7d26e40a346338be149':
     dependencies:
-      '@swc/core': 1.7.0
+      '@swc/wasm': 1.7.11
       glob: 11.0.0
-    transitivePeerDependencies:
-      - '@swc/helpers'
 
-  '@neematajs/bun-http-server@0.0.3(typescript@5.5.3)':
+  '@nmtjs/client@0.0.1(@nmtjs/common@0.0.1)(@nmtjs/contract@0.0.1(@nmtjs/common@0.0.1)(@sinclair/typebox@0.32.34))':
     dependencies:
-      typescript: 5.5.3
+      '@nmtjs/common': 0.0.1
+      '@nmtjs/contract': 0.0.1(@nmtjs/common@0.0.1)(@sinclair/typebox@0.32.34)
 
-  '@neematajs/client@1.1.0-alpha.3(@neematajs/common@1.1.0-alpha.3)(@neematajs/contract@1.1.0-alpha.3(@neematajs/common@1.1.0-alpha.3))':
+  '@nmtjs/common@0.0.1': {}
+
+  '@nmtjs/contract@0.0.1(@nmtjs/common@0.0.1)(@sinclair/typebox@0.32.34)':
     dependencies:
-      '@neematajs/common': 1.1.0-alpha.3
-      '@neematajs/contract': 1.1.0-alpha.3(@neematajs/common@1.1.0-alpha.3)
-
-  '@neematajs/common@1.1.0-alpha.3': {}
-
-  '@neematajs/contract@1.1.0-alpha.3(@neematajs/common@1.1.0-alpha.3)':
-    dependencies:
-      '@neematajs/common': 1.1.0-alpha.3
+      '@nmtjs/common': 0.0.1
       '@sinclair/typebox': 0.32.34
 
   '@pkgjs/parseargs@0.11.0':
@@ -1186,71 +1097,14 @@ snapshots:
 
   '@sinclair/typebox@0.32.34': {}
 
-  '@swc/core-darwin-arm64@1.7.0':
-    optional: true
-
-  '@swc/core-darwin-x64@1.7.0':
-    optional: true
-
-  '@swc/core-linux-arm-gnueabihf@1.7.0':
-    optional: true
-
-  '@swc/core-linux-arm64-gnu@1.7.0':
-    optional: true
-
-  '@swc/core-linux-arm64-musl@1.7.0':
-    optional: true
-
-  '@swc/core-linux-x64-gnu@1.7.0':
-    optional: true
-
-  '@swc/core-linux-x64-musl@1.7.0':
-    optional: true
-
-  '@swc/core-win32-arm64-msvc@1.7.0':
-    optional: true
-
-  '@swc/core-win32-ia32-msvc@1.7.0':
-    optional: true
-
-  '@swc/core-win32-x64-msvc@1.7.0':
-    optional: true
-
-  '@swc/core@1.7.0':
-    dependencies:
-      '@swc/counter': 0.1.3
-      '@swc/types': 0.1.10
-    optionalDependencies:
-      '@swc/core-darwin-arm64': 1.7.0
-      '@swc/core-darwin-x64': 1.7.0
-      '@swc/core-linux-arm-gnueabihf': 1.7.0
-      '@swc/core-linux-arm64-gnu': 1.7.0
-      '@swc/core-linux-arm64-musl': 1.7.0
-      '@swc/core-linux-x64-gnu': 1.7.0
-      '@swc/core-linux-x64-musl': 1.7.0
-      '@swc/core-win32-arm64-msvc': 1.7.0
-      '@swc/core-win32-ia32-msvc': 1.7.0
-      '@swc/core-win32-x64-msvc': 1.7.0
-
-  '@swc/counter@0.1.3': {}
-
-  '@swc/types@0.1.10':
-    dependencies:
-      '@swc/counter': 0.1.3
-
-  '@types/bun@1.1.6':
-    dependencies:
-      bun-types: 1.1.17
+  '@swc/wasm@1.7.11': {}
 
   '@types/estree@1.0.5': {}
 
   '@types/node@20.12.14':
     dependencies:
       undici-types: 5.26.5
-
-  '@types/ws@8.5.11':
-    dependencies:
-      '@types/node': 20.12.14
+    optional: true
 
   '@vitest/expect@2.0.3':
     dependencies:
@@ -1315,11 +1169,6 @@ snapshots:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
-
-  bun-types@1.1.17:
-    dependencies:
-      '@types/node': 20.12.14
-      '@types/ws': 8.5.11
 
   cac@6.7.14: {}
 
@@ -1674,7 +1523,10 @@ snapshots:
 
   typescript@5.5.3: {}
 
-  undici-types@5.26.5: {}
+  uWebSockets.js@https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/6f4b450fc642abba540535f0755c990b42a16026: {}
+
+  undici-types@5.26.5:
+    optional: true
 
   vite-node@2.0.3(@types/node@20.12.14):
     dependencies:

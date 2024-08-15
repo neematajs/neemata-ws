@@ -1,5 +1,5 @@
 {
-  "name": "@neematajs/ws-client",
+  "name": "@nmtjs/ws-client",
   "type": "module",
   "module": "index.ts",
   "publishConfig": {
@@ -11,12 +11,12 @@
     "type-check": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@neematajs/common": "^1.1.0-alpha.3",
-    "@neematajs/client": "^1.1.0-alpha.3"
+    "@nmtjs/common": "^0.0.1",
+    "@nmtjs/client": "^0.0.1"
   },
   "devDependencies": {
-    "@neematajs/common": "^1.1.0-alpha.3",
-    "@neematajs/client": "^1.1.0-alpha.3"
+    "@nmtjs/common": "^0.0.1",
+    "@nmtjs/client": "^0.0.1"
   },
   "files": [
     "index.ts",

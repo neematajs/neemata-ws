@@ -1,23 +1,24 @@
 import {
-  AbortStreamError,
+  type ClientDownStreamWrapper,
   ClientTransport,
-  type ClientTransportConnectOptions,
   type ClientTransportRpcCall,
   type ClientTransportRpcResult,
-  type DownStream,
+  ClientUpStream,
   Subscription,
-  type UpStream,
+  createClientDownStream,
   onAbort,
   once,
-} from '@neematajs/client'
+} from '@nmtjs/client'
 import {
-  type BaseClientFormat,
+  type DecodeRpcContext,
+  type EncodeRpcContext,
   MessageType,
+  MessageTypeName,
   TransportType,
   concat,
   decodeNumber,
   encodeNumber,
-} from '@neematajs/common'
+} from '@nmtjs/common'
 
 export type WsClientTransportOptions = {
   /**
@@ -35,7 +36,8 @@ export type WsClientTransportOptions = {
    * @default globalThis.WebSocket
    */
   wsFactory?: (url: URL) => WebSocket
-  format: BaseClientFormat
+
+  debug?: boolean
 }
 
 type WsCall = {
@@ -53,20 +55,22 @@ export class WsClientTransport extends ClientTransport<{
 
   protected readonly calls = new Map<number, WsCall>()
   protected readonly subscriptions = new Map<number, Subscription>()
-  protected readonly upStreams = new Map<number, UpStream>()
-  protected readonly downStreams = new Map<number, DownStream>()
+  protected readonly upStreams = new Map<number, ClientUpStream>()
+  protected readonly downStreams = new Map<number, ClientDownStreamWrapper>()
+  protected upStreamId = 0
   protected queryParams = {}
   protected ws?: WebSocket
   protected isHealthy = false
   protected checkHealthAttempts = 0
   protected autoreconnect: boolean
   protected isConnected = false
-  protected connectOptions?: ClientTransportConnectOptions
 
   private wsFactory!: (url: URL) => WebSocket
+  private encodeRpcContext: EncodeRpcContext
+  private decodeRpcContext: DecodeRpcContext
 
   constructor(private readonly options: WsClientTransportOptions) {
-    super(options.format)
+    super()
 
     this.autoreconnect = this.options.autoreconnect ?? true
 
@@ -76,11 +80,32 @@ export class WsClientTransport extends ClientTransport<{
       this.wsFactory = (url: URL) => new WebSocket(url.toString())
     }
 
+    // TODO: wtf is this for?
     this.on('close', (error) => this.clear(error))
+
+    this.encodeRpcContext = {
+      addStream: (blob) => {
+        const id = ++this.upStreamId
+        const upstream = new ClientUpStream(id, blob)
+        this.upStreams.set(id, upstream)
+        return { id, metadata: blob.metadata }
+      },
+      getStream: (id) => this.upStreams.get(id),
+    }
+
+    this.decodeRpcContext = {
+      addStream: (id, metadata) => {
+        const downstream = createClientDownStream(metadata, () =>
+          this.send(MessageType.DownStreamPull, encodeNumber(id, 'Uint32')),
+        )
+        this.downStreams.set(id, downstream)
+        return downstream.blob
+      },
+      getStream: (id) => this.downStreams.get(id),
+    }
   }
 
-  async connect(options?: ClientTransportConnectOptions) {
-    this.connectOptions = options
+  async connect() {
     // reset default autoreconnect value
     this.autoreconnect = this.options.autoreconnect ?? true
     await this.healthCheck()
@@ -88,9 +113,9 @@ export class WsClientTransport extends ClientTransport<{
     this.ws = this.wsFactory(
       this.getURL('api', 'ws', {
         ...this.queryParams,
-        accept: this.options.format.mime,
-        'content-type': this.options.format.mime,
-        services: options?.services?.join(','),
+        accept: this.client.format.contentType,
+        'content-type': this.client.format.contentType,
+        services: this.client.services,
       }),
     )
 
@@ -120,6 +145,7 @@ export class WsClientTransport extends ClientTransport<{
               `Connection closed with code ${event.code}: ${event.reason}`,
             ),
       )
+      // FIXME: cleanup calls, streams, subscriptions
       if (this.autoreconnect) this.connect()
     }
     this.ws.onerror = (event) => {
@@ -136,16 +162,19 @@ export class WsClientTransport extends ClientTransport<{
   }
 
   async rpc(call: ClientTransportRpcCall): Promise<ClientTransportRpcResult> {
-    const { abortSignal, callId, payload, procedure, service } = call
+    const { signal, callId, payload, procedure, service } = call
 
-    const data = this.options.format.encodeRpc({
-      callId,
-      service,
-      procedure,
-      payload,
-    })
+    const data = this.client.format.encodeRpc(
+      {
+        callId,
+        service,
+        procedure,
+        payload,
+      },
+      this.encodeRpcContext,
+    )
 
-    onAbort(abortSignal, () => {
+    onAbort(signal, () => {
       const call = this.calls.get(callId)
       if (call) {
         const { reject } = call
@@ -167,8 +196,13 @@ export class WsClientTransport extends ClientTransport<{
     this.queryParams = params
   }
 
-  protected async send(type: MessageType, ...payload: ArrayBuffer[]) {
+  protected send(type: MessageType, ...payload: ArrayBuffer[]) {
     this.ws?.send(concat(encodeNumber(type, 'Uint8'), ...payload))
+    if (this.options.debug) {
+      console.groupCollapsed(`[WS] Sent ${MessageTypeName[type]}`)
+      console.trace()
+      console.groupEnd()
+    }
   }
 
   protected async clear(error: Error = new Error('Connection closed')) {
@@ -178,11 +212,11 @@ export class WsClientTransport extends ClientTransport<{
     }
 
     for (const stream of this.upStreams.values()) {
-      stream.destroy(error)
+      stream.reader.cancel(error)
     }
 
     for (const stream of this.downStreams.values()) {
-      stream.ac.abort(error)
+      stream.writer.abort(error)
     }
 
     for (const subscription of this.subscriptions.values()) {
@@ -200,7 +234,7 @@ export class WsClientTransport extends ClientTransport<{
       try {
         const signal = AbortSignal.timeout(10000)
         const url = this.getURL('healthy', 'http', {
-          auth: this.connectOptions?.auth,
+          auth: this.client.auth,
         })
         const { ok } = await fetch(url, { signal })
         this.isHealthy = ok
@@ -245,114 +279,139 @@ export class WsClientTransport extends ClientTransport<{
   }
 
   protected async [MessageType.Event](buffer: ArrayBuffer) {
-    const [service, event, payload] = this.options.format.decode(buffer)
+    const [service, event, payload] = this.client.format.decode(buffer)
+    if (this.options.debug) {
+      console.groupCollapsed(`[WS] Received "Event" ${service}/${event}`)
+      console.log(payload)
+      console.groupEnd()
+    }
     this.emit('event', service, event, payload)
   }
 
   protected async [MessageType.Rpc](buffer: ArrayBuffer) {
-    const [callId, response, error] = this.options.format.decode(buffer)
+    const { callId, error, payload } = this.client.format.decodeRpc(
+      buffer,
+      this.decodeRpcContext,
+    )
 
     if (this.calls.has(callId)) {
       this.resolveRpc(
         callId,
-        error ? { success: false, error } : { success: true, value: response },
+        error ? { success: false, error } : { success: true, value: payload },
       )
-    }
-  }
-
-  protected [MessageType.RpcStream](buffer: ArrayBuffer) {
-    const [callId, streamDataType, streamId, payload] =
-      this.options.format.decode(buffer)
-
-    const abortStream = () =>
-      this.send(MessageType.DownStreamAbort, encodeNumber(streamId, 'Uint32'))
-
-    if (this.calls.has(callId)) {
-      const ac = new AbortController()
-      onAbort(ac.signal, () => {
-        this.downStreams.delete(streamId)
-        abortStream()
-      })
-      const stream = this.createDownStream(streamDataType, ac)
-      this.downStreams.set(streamId, stream)
-      this.resolveRpc(callId, {
-        success: true,
-        value: { payload, stream: stream.interface },
-      })
-    } else {
-      abortStream()
     }
   }
 
   protected async [MessageType.UpStreamPull](buffer: ArrayBuffer) {
     const id = decodeNumber(buffer, 'Uint32')
     const size = decodeNumber(buffer, 'Uint32', Uint32Array.BYTES_PER_ELEMENT)
+
+    if (this.options.debug) {
+      console.log(`[WS] Received "UpStreamPull" ${id}`)
+    }
+
     const stream = this.upStreams.get(id)
-    if (!stream) throw new Error('Stream not found')
-    const { done, chunk } = await stream._read(size)
-    if (done) {
-      this.send(MessageType.UpStreamEnd, encodeNumber(id, 'Uint32'))
-    } else {
-      this.send(
-        MessageType.UpStreamEnd,
-        concat(encodeNumber(id, 'Uint32'), chunk!),
-      )
+    if (stream) {
+      const buf = new Uint8Array(new ArrayBuffer(size))
+      const { done, value } = await stream.reader.read(buf)
+      if (done) {
+        this.send(MessageType.UpStreamEnd, encodeNumber(id, 'Uint32'))
+      } else {
+        this.send(
+          MessageType.UpStreamPush,
+          concat(
+            encodeNumber(id, 'Uint32'),
+            value.buffer.slice(0, value.byteLength),
+          ),
+        )
+      }
     }
   }
 
   protected async [MessageType.UpStreamEnd](buffer: ArrayBuffer) {
     const id = decodeNumber(buffer, 'Uint32')
+    if (this.options.debug) {
+      console.log(`[WS] Received "UpStreamEnd" ${id}`)
+    }
     const stream = this.upStreams.get(id)
-    if (!stream) throw new Error('Stream not found')
-    stream.emit('end')
-    stream.destroy()
-    this.upStreams.delete(id)
+    if (stream) {
+      stream.reader.cancel()
+      this.upStreams.delete(id)
+    }
   }
 
   protected [MessageType.UpStreamAbort](buffer: ArrayBuffer) {
     const id = decodeNumber(buffer, 'Uint32')
+    if (this.options.debug) {
+      console.log(`[WS] Received "UpStreamAbort" ${id}`)
+    }
     const stream = this.upStreams.get(id)
-    if (!stream) throw new Error('Stream not found')
-    stream.destroy(new AbortStreamError('Aborted by server'))
-    this.upStreams.delete(id)
+    if (stream) {
+      try {
+        stream.reader.cancel(new Error('Aborted by server'))
+      } finally {
+        this.upStreams.delete(id)
+      }
+    }
   }
 
   protected async [MessageType.DownStreamPush](buffer: ArrayBuffer) {
-    const streamId = decodeNumber(buffer, 'Uint32')
-    const stream = this.downStreams.get(streamId)
+    const id = decodeNumber(buffer, 'Uint32')
+    if (this.options.debug) {
+      console.log(`[WS] Received "DownStreamPush" ${id}`)
+    }
+    const stream = this.downStreams.get(id)
     if (stream) {
-      await stream.writer.write(
-        new Uint8Array(buffer.slice(Uint32Array.BYTES_PER_ELEMENT)),
-      )
-      this.send(MessageType.DownStreamPull, encodeNumber(streamId, 'Uint32'))
+      try {
+        await stream.writer.ready
+        const chunk = buffer.slice(Uint32Array.BYTES_PER_ELEMENT)
+        await stream.writer.write(new Uint8Array(chunk))
+        await stream.writer.ready
+        this.send(MessageType.DownStreamPull, encodeNumber(id, 'Uint32'))
+      } catch (e) {
+        this.send(MessageType.DownStreamAbort, encodeNumber(id, 'Uint32'))
+        this.downStreams.delete(id)
+      }
     }
   }
 
-  protected [MessageType.DownStreamEnd](buffer: ArrayBuffer) {
-    const streamId = decodeNumber(buffer, 'Uint32')
-    const stream = this.downStreams.get(streamId)
+  protected async [MessageType.DownStreamEnd](buffer: ArrayBuffer) {
+    const id = decodeNumber(buffer, 'Uint32')
+    if (this.options.debug) {
+      console.log(`[WS] Received "DownStreamEnd" ${id}`)
+    }
+    const stream = this.downStreams.get(id)
     if (stream) {
-      stream.writer.close()
-      this.downStreams.delete(streamId)
+      this.downStreams.delete(id)
+      stream.writer.close().catch(() => {})
     }
   }
 
-  protected [MessageType.DownStreamAbort](buffer: ArrayBuffer) {
-    const streamId = decodeNumber(buffer, 'Uint32')
-    const stream = this.downStreams.get(streamId)
+  protected async [MessageType.DownStreamAbort](buffer: ArrayBuffer) {
+    const id = decodeNumber(buffer, 'Uint32')
+    if (this.options.debug) {
+      console.log(`[WS] Received "DownStreamAbort" ${id}`)
+    }
+    const stream = this.downStreams.get(id)
     if (stream) {
-      stream.writable.abort(new AbortStreamError('Aborted by server'))
-      this.downStreams.delete(streamId)
+      this.downStreams.delete(id)
+      stream.writer.abort(new Error('Aborted by server')).catch(() => {})
     }
   }
 
   protected [MessageType.RpcSubscription](buffer: ArrayBuffer) {
-    const [callId, key, payload] = this.options.format.decode(buffer)
+    const {
+      callId,
+      payload: [key, payload],
+    } = this.client.format.decodeRpc(buffer, this.decodeRpcContext)
     if (this.calls.has(callId)) {
       const subscription = new Subscription(key, () => {
         subscription.emit('end')
         this.subscriptions.delete(key)
-        this.send(MessageType.ClientUnsubscribe, this.format.encode([key]))
+        this.send(
+          MessageType.ClientUnsubscribe,
+          this.client.format.encode([key]),
+        )
       })
       this.subscriptions.set(key, subscription)
       this.resolveRpc(callId, {
@@ -363,13 +422,23 @@ export class WsClientTransport extends ClientTransport<{
   }
 
   protected [MessageType.ServerSubscriptionEvent](buffer: ArrayBuffer) {
-    const [key, event, payload] = this.options.format.decode(buffer)
+    const [key, event, payload] = this.client.format.decode(buffer)
+    if (this.options.debug) {
+      console.groupCollapsed(
+        `[WS] Received "ServerSubscriptionEvent" ${key}/${event}`,
+      )
+      console.log(payload)
+      console.groupEnd()
+    }
     const subscription = this.subscriptions.get(key)
     if (subscription) subscription.emit(event, payload)
   }
 
   protected [MessageType.ServerUnsubscribe](buffer: ArrayBuffer) {
-    const [key] = this.options.format.decode(buffer)
+    const [key] = this.client.format.decode(buffer)
+    if (this.options.debug) {
+      console.log(`[WS] Received "ServerUnsubscribe" ${key}`)
+    }
     const subscription = this.subscriptions.get(key)
     subscription?.emit('end')
     this.subscriptions.delete(key)
