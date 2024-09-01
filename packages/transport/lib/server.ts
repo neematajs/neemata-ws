@@ -21,7 +21,8 @@ import {
   encodeNumber,
 } from '@nmtjs/common'
 import { App, SSLApp, type TemplatedApp } from 'uWebSockets.js'
-import { connectionData } from './providers.ts'
+
+import { connectionData } from './injectables.ts'
 import type {
   WsTransportOptions,
   WsTransportSocket,
