@@ -20,7 +20,13 @@ import {
   decodeNumber,
   encodeNumber,
 } from '@nmtjs/common'
-import { App, SSLApp, type TemplatedApp } from 'uWebSockets.js'
+import {
+  App,
+  type HttpRequest,
+  type HttpResponse,
+  SSLApp,
+  type TemplatedApp,
+} from 'uWebSockets.js'
 
 import { connectionData } from './injectables.ts'
 import type {
@@ -48,11 +54,13 @@ export class WsTransportServer {
     this.server = this.options.tls ? SSLApp(options.tls!) : App()
 
     this.server
-      .get('/healthy', (res) => {
-        // cors
-        res.writeHeader('Access-Control-Allow-Origin', '*')
-        res.writeHeader('Access-Control-Allow-Headers', 'Content-Type')
-        res.writeHeader('Access-Control-Allow-Methods', 'GET')
+      .options('/*', (res, req) => {
+        this.applyCors(res, req)
+        res.writeStatus('200 OK')
+        res.endWithoutBody()
+      })
+      .get('/healthy', (res, req) => {
+        this.applyCors(res, req)
         res.writeHeader('Content-Type', 'text/plain')
         res.end('OK')
       })
@@ -60,6 +68,7 @@ export class WsTransportServer {
         sendPingsAutomatically: true,
         maxPayloadLength: this.options.maxPayloadLength,
         upgrade: (res, req, context) => {
+          this.applyCors(res, req)
           const requestData = getRequestData(req)
           const container = this.application.container.createScope(
             Scope.Connection,
@@ -213,6 +222,16 @@ export class WsTransportServer {
     message = 'Unknown error while processing request',
   ) {
     this.logger.error(new Error(message, { cause }))
+  }
+
+  protected applyCors(res: HttpResponse, req: HttpRequest) {
+    // TODO: this should be configurable
+    const origin = req.getHeader('origin')
+    if (!origin) return
+    res.headers.set('Access-Control-Allow-Origin', origin)
+    res.headers.set('Access-Control-Allow-Headers', 'Content-Type')
+    res.headers.set('Access-Control-Allow-Methods', 'GET, POST')
+    res.headers.set('Access-Control-Allow-Credentials', 'true')
   }
 
   protected handleContainerDisposal(container: Container) {
