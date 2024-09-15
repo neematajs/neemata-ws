@@ -148,8 +148,9 @@ export class WsClientTransport extends ClientTransport<{
       // FIXME: cleanup calls, streams, subscriptions
       if (this.autoreconnect) this.connect()
     }
-    this.ws.onerror = (event) => {
+    this.ws.onerror = (cause) => {
       this.isHealthy = false
+      this.emit('close', new Error('Connection error', { cause }))
     }
     await once(this, 'open')
     this.emit('connect')

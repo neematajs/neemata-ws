@@ -78,13 +78,13 @@ export class WsTransportServer {
           for (const serviceName of services) {
             const service = this.application.registry.services.get(serviceName)
             if (!service)
-              throw new Response(`Service ${service} not found`, {
-                status: 400,
-              })
+              return void res
+                .writeStatus('400 Bad Request')
+                .end(`Service ${service} not found`)
             if (this.transportType in service.contract.transports === false)
-              throw new Response(`Service ${service} not supported`, {
-                status: 400,
-              })
+              return void res
+                .writeStatus('400 Bad Request')
+                .end(`Service ${service} not supported`)
           }
 
           const data: WsUserData = {
@@ -123,6 +123,7 @@ export class WsTransportServer {
         },
         open: (ws: WsTransportSocket) => {
           const data = ws.getUserData()
+          this.logger.debug('Connection %s opened', data.id)
           data.context.decode = this.createDecodeRpcContext(ws)
           data.context.encode = this.createEncodeRpcContext(ws)
           data.container.provide(connectionData, data.data)
@@ -156,8 +157,15 @@ export class WsTransportServer {
           data.backpressure?.resolve()
           data.backpressure = null
         },
-        close: (ws: WsTransportSocket) => {
+        close: (ws: WsTransportSocket, code, message) => {
           const data = ws.getUserData()
+
+          this.logger.debug(
+            'Connection %s closed with code %s: ',
+            data.id,
+            code,
+            Buffer.from(message).toString(),
+          )
 
           this.application.connections.remove(data.id)
           const error = new Error('Connection closed')
