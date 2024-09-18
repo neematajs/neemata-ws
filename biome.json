@@ -5,7 +5,8 @@
       "**/dist/**",
       "**/node_modules/**",
       "**/coverage/**",
-      "**/package.json"
+      "**/package.json",
+      "**/.vscode/**"
     ]
   },
   "organizeImports": {

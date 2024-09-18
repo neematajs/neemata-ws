@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import {
-  type AnyProcedure,
+  type AnyBaseProcedure,
   ApiError,
   type ApplicationContext,
   type Connection,
@@ -249,7 +249,7 @@ export class WsTransportServer {
   protected async handleRPC(options: {
     connection: Connection
     service: Service
-    procedure: AnyProcedure
+    procedure: AnyBaseProcedure
     container: Container
     signal: AbortSignal
     payload: any
