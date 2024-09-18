@@ -161,7 +161,7 @@ export class WsTransportServer {
           const data = ws.getUserData()
 
           this.logger.debug(
-            'Connection %s closed with code %s: ',
+            'Connection %s closed with code %s: %s',
             data.id,
             code,
             Buffer.from(message).toString(),

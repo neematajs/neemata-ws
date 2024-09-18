@@ -130,6 +130,8 @@ export class WsClientTransport extends ClientTransport<{
       }
     }
     this.ws.onopen = (event) => {
+      if (this.options.debug)
+        console.log(`[WS] Connected to ${this.options.origin}`)
       this.isConnected = true
       this.emit('open')
       this.checkHealthAttempts = 0
@@ -153,6 +155,8 @@ export class WsClientTransport extends ClientTransport<{
       this.emit('close', new Error('Connection error', { cause }))
     }
     await once(this, 'open')
+    if (this.options.debug)
+      console.log(`2[WS] Connected to ${this.options.origin}`)
     this.emit('connect')
   }
 

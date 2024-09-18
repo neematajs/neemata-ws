@@ -1,10 +1,11 @@
 {
   "name": "@nmtjs/ws-client",
   "type": "module",
-  "module": "index.ts",
-  "publishConfig": {
-    "module": "./dist/index.js",
-    "types": "./index.ts"
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./index.ts"
+    }
   },
   "scripts": {
     "build": "neemata-build -p neutral ./index.ts",

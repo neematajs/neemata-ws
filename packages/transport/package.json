@@ -12,7 +12,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.47.0"
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.48.0"
   },
   "peerDependencies": {
     "@nmtjs/application": "^0.2.1",
