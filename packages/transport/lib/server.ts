@@ -68,7 +68,6 @@ export class WsTransportServer {
         sendPingsAutomatically: true,
         maxPayloadLength: this.options.maxPayloadLength,
         upgrade: (res, req, context) => {
-          this.applyCors(res, req)
           const requestData = getRequestData(req)
           const container = this.application.container.createScope(
             Scope.Connection,
@@ -242,8 +241,8 @@ export class WsTransportServer {
     res.writeHeader('Access-Control-Allow-Credentials', 'true')
   }
 
-  protected handleContainerDisposal(container: Container) {
-    container.dispose()
+  protected async handleContainerDisposal(container: Container) {
+    await container.dispose()
   }
 
   protected async handleRPC(options: {
