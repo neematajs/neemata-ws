@@ -12,12 +12,12 @@
     "type-check": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@nmtjs/common": "^0.3.8",
-    "@nmtjs/client": "^0.3.8"
+    "@nmtjs/client": "^0.3.9",
+    "@nmtjs/common": "^0.3.9"
   },
   "devDependencies": {
-    "@nmtjs/common": "^0.3.8",
-    "@nmtjs/client": "^0.3.8"
+    "@nmtjs/client": "^0.3.9",
+    "@nmtjs/common": "^0.3.9"
   },
   "files": [
     "index.ts",

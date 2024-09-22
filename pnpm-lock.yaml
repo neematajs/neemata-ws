@@ -27,11 +27,11 @@ importers:
   packages/client:
     devDependencies:
       '@nmtjs/client':
-        specifier: ^0.3.8
-        version: 0.3.8(@nmtjs/common@0.3.8)(@nmtjs/contract@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)))(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))
+        specifier: ^0.3.9
+        version: 0.3.9(@nmtjs/common@0.3.9)(@nmtjs/contract@0.3.8(@nmtjs/common@0.3.9)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)))(@nmtjs/type@0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))
       '@nmtjs/common':
-        specifier: ^0.3.8
-        version: 0.3.8
+        specifier: ^0.3.9
+        version: 0.3.9
 
   packages/transport:
     dependencies:
@@ -40,11 +40,11 @@ importers:
         version: https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/51ae1d1fd92dff77cbbdc7c431021f85578da1a6
     devDependencies:
       '@nmtjs/application':
-        specifier: ^0.3.8
-        version: 0.3.8(@nmtjs/common@0.3.8)(@nmtjs/contract@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)))(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))
+        specifier: ^0.3.9
+        version: 0.3.9(@nmtjs/common@0.3.9)(@nmtjs/contract@0.3.8(@nmtjs/common@0.3.9)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)))(@nmtjs/type@0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))
       '@nmtjs/common':
-        specifier: ^0.3.8
-        version: 0.3.8
+        specifier: ^0.3.9
+        version: 0.3.9
       '@types/node':
         specifier: ^18.0.0
         version: 18.19.50
@@ -249,12 +249,12 @@ packages:
   '@jridgewell/sourcemap-codec@1.5.0':
     resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
 
-  '@nmtjs/application@0.3.8':
-    resolution: {integrity: sha512-txw8sbasxXEhtvcZhDKOYbRd5j2bwgZB0QESZ2CwzQz4lBOoA/tKRWM+esmGDBhcodpeD1MQ17EvAX/vAVAwCQ==}
+  '@nmtjs/application@0.3.9':
+    resolution: {integrity: sha512-oW5l5WMrzuOefOFv0pdELwsH/cVCQ+bGZYif4GA2nTXDMLTZccS8Vrdybd33sry6O7zF+3lcZ1ztcewM4f5Vcw==}
     peerDependencies:
-      '@nmtjs/common': 0.3.8
-      '@nmtjs/contract': 0.3.8
-      '@nmtjs/type': 0.3.8
+      '@nmtjs/common': 0.3.9
+      '@nmtjs/contract': 0.3.9
+      '@nmtjs/type': 0.3.9
 
   '@nmtjs/builder@https://codeload.github.com/neematajs/builder/tar.gz/a9139aa321ebf2054ce2f7d26e40a346338be149':
     resolution: {tarball: https://codeload.github.com/neematajs/builder/tar.gz/a9139aa321ebf2054ce2f7d26e40a346338be149}
@@ -262,15 +262,15 @@ packages:
     engines: {node: '>= 18'}
     hasBin: true
 
-  '@nmtjs/client@0.3.8':
-    resolution: {integrity: sha512-1rpzVqBpBvL96H7ndPMJvGRzurofxpZlZIrQ2OlaP9qrEKyP9gd3xRdWLINknC2AvDze8S2WBOIA9h/OcvQHrQ==}
+  '@nmtjs/client@0.3.9':
+    resolution: {integrity: sha512-2I2ZIZ1Rrb9xzgkOcYoTkgjQ8J40uNOq7SquaEn9Y+FsYql8l/Hl+j1d3j5zopdYaY6Lu42iGphBYRIQFbtmJQ==}
     peerDependencies:
-      '@nmtjs/common': 0.3.8
-      '@nmtjs/contract': 0.3.8
-      '@nmtjs/type': 0.3.8
+      '@nmtjs/common': 0.3.9
+      '@nmtjs/contract': 0.3.9
+      '@nmtjs/type': 0.3.9
 
-  '@nmtjs/common@0.3.8':
-    resolution: {integrity: sha512-x9SNm6qT3rPesSACxJYsKs43gsUqwl/hG27B0JXJpueAGROdSOiZNCHynnf8LwKEtMaxnyIka8IkdTJ413y6Ow==}
+  '@nmtjs/common@0.3.9':
+    resolution: {integrity: sha512-DpccPHH1GST7jmSmJihega9QK8JT79Ek30X6rCFeBRJNSz2k8iM7je7Lnfy6Wg1C7feUxvd37Ds9A9c+GNiUeQ==}
 
   '@nmtjs/contract@0.3.8':
     resolution: {integrity: sha512-siC4NTzV+naPL38DJxlW694FqwpciUbdsMZT+PUqB6fj6RJmlbqR+2SCcN9g6yCfQFye9Iu80GMpfsgXRH4NOg==}
@@ -978,11 +978,11 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.5.0': {}
 
-  '@nmtjs/application@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/contract@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)))(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))':
+  '@nmtjs/application@0.3.9(@nmtjs/common@0.3.9)(@nmtjs/contract@0.3.8(@nmtjs/common@0.3.9)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)))(@nmtjs/type@0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))':
     dependencies:
-      '@nmtjs/common': 0.3.8
-      '@nmtjs/contract': 0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))
-      '@nmtjs/type': 0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
+      '@nmtjs/common': 0.3.9
+      '@nmtjs/contract': 0.3.8(@nmtjs/common@0.3.9)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))
+      '@nmtjs/type': 0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
       pino: 9.4.0
       pino-pretty: 11.2.2
 
@@ -991,22 +991,22 @@ snapshots:
       '@swc/wasm': 1.7.26
       glob: 11.0.0
 
-  '@nmtjs/client@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/contract@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)))(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))':
+  '@nmtjs/client@0.3.9(@nmtjs/common@0.3.9)(@nmtjs/contract@0.3.8(@nmtjs/common@0.3.9)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)))(@nmtjs/type@0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))':
     dependencies:
-      '@nmtjs/common': 0.3.8
-      '@nmtjs/contract': 0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))
-      '@nmtjs/type': 0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
+      '@nmtjs/common': 0.3.9
+      '@nmtjs/contract': 0.3.8(@nmtjs/common@0.3.9)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))
+      '@nmtjs/type': 0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
 
-  '@nmtjs/common@0.3.8': {}
+  '@nmtjs/common@0.3.9': {}
 
-  '@nmtjs/contract@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))':
+  '@nmtjs/contract@0.3.8(@nmtjs/common@0.3.9)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))':
     dependencies:
-      '@nmtjs/common': 0.3.8
-      '@nmtjs/type': 0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
+      '@nmtjs/common': 0.3.9
+      '@nmtjs/type': 0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
 
-  '@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)':
+  '@nmtjs/type@0.3.8(@nmtjs/common@0.3.9)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)':
     dependencies:
-      '@nmtjs/common': 0.3.8
+      '@nmtjs/common': 0.3.9
       '@sinclair/typebox': 0.33.11
       temporal-polyfill: 0.2.5
 

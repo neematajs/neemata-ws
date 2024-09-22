@@ -10,6 +10,7 @@ import {
   ServerUpStream,
   type Service,
   SubscriptionResponse,
+  builtin,
   onAbort,
 } from '@nmtjs/application'
 import {
@@ -126,7 +127,8 @@ export class WsTransportServer {
           data.context.decode = this.createDecodeRpcContext(ws)
           data.context.encode = this.createEncodeRpcContext(ws)
           data.container.provide(connectionData, data.data)
-          this.application.connections.add({
+
+          const connection = this.application.connections.add({
             id: data.id,
             services: data.services,
             type: this.transportType,
@@ -134,6 +136,8 @@ export class WsTransportServer {
             sendEvent: (service, event, payload) =>
               sendMessage(ws, MessageType.Event, [service, event, payload]),
           })
+
+          data.container.provide(builtin.connection, connection)
         },
         message: async (ws: WsTransportSocket, event) => {
           const buffer = event as unknown as ArrayBuffer

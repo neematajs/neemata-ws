@@ -15,12 +15,12 @@
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.48.0"
   },
   "peerDependencies": {
-    "@nmtjs/application": "^0.3.8",
-    "@nmtjs/common": "^0.3.8"
+    "@nmtjs/application": "^0.3.9",
+    "@nmtjs/common": "^0.3.9"
   },
   "devDependencies": {
-    "@nmtjs/application": "^0.3.8",
-    "@nmtjs/common": "^0.3.8",
+    "@nmtjs/application": "^0.3.9",
+    "@nmtjs/common": "^0.3.9",
     "@types/node": "^18.0.0"
   },
   "engines": {
